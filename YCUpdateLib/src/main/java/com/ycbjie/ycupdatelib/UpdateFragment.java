@@ -51,7 +51,7 @@ public class UpdateFragment extends BaseDialogFragment implements View.OnClickLi
     private String packageName;
 
     private static final String[] mPermission = {Manifest.permission.WRITE_EXTERNAL_STORAGE,
-    Manifest.permission.READ_EXTERNAL_STORAGE};
+            Manifest.permission.READ_EXTERNAL_STORAGE};
     private int downloadStatus = UpdateUtils.DownloadStatus.START;
 
     private FragmentActivity mActivity;
@@ -64,14 +64,15 @@ public class UpdateFragment extends BaseDialogFragment implements View.OnClickLi
 
     /**
      * 版本更新
-     * @param isForceUpdate                     是否强制更新
-     * @param apkUrl                            下载链接
-     * @param apkName                           下载apk名称
-     * @param desc                              更新文案
-     * @param packageName                       包名
+     *
+     * @param isForceUpdate 是否强制更新
+     * @param apkUrl        下载链接
+     * @param apkName       下载apk名称
+     * @param desc          更新文案
+     * @param packageName   包名
      */
-    public static void showFragment(FragmentActivity activity, boolean isForceUpdate ,
-                                    String apkUrl , String apkName , String desc,
+    public static void showFragment(FragmentActivity activity, boolean isForceUpdate,
+                                    String apkUrl, String apkName, String desc,
                                     String packageName) {
         UpdateFragment updateFragment = new UpdateFragment();
         Bundle bundle = new Bundle();
@@ -79,7 +80,7 @@ public class UpdateFragment extends BaseDialogFragment implements View.OnClickLi
         bundle.putString("desc", desc);
         bundle.putString("apkName", apkName);
         bundle.putBoolean("isUpdate", isForceUpdate);
-        bundle.putString("packageName",packageName);
+        bundle.putString("packageName", packageName);
         updateFragment.setArguments(bundle);
         updateFragment.show(activity.getSupportFragmentManager());
         FileDownloader.setup(activity);
@@ -104,13 +105,13 @@ public class UpdateFragment extends BaseDialogFragment implements View.OnClickLi
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (outState != null) {
-            apkUrl = outState.getString("apk_url");
-            desc = outState.getString("desc");
-            apkName = outState.getString("apkName");
-            isForceUpdate = outState.getBoolean("isUpdate");
-            packageName = outState.getString("packageName");
-        }
+//        if (outState != null) {
+//            apkUrl = outState.getString("apk_url");
+//            desc = outState.getString("desc");
+//            apkName = outState.getString("apkName");
+//            isForceUpdate = outState.getBoolean("isUpdate");
+//            packageName = outState.getString("packageName");
+//        }
     }
 
 
@@ -158,7 +159,7 @@ public class UpdateFragment extends BaseDialogFragment implements View.OnClickLi
 
         mProgress.setMax(100);
         mProgress.setProgress(0);
-        mTvDesc.setText(desc==null?"":desc);
+        mTvDesc.setText(desc == null ? "" : desc);
         if (isForceUpdate) {
             mTvOk.setVisibility(View.VISIBLE);
             mTvCancel.setVisibility(View.GONE);
@@ -174,7 +175,7 @@ public class UpdateFragment extends BaseDialogFragment implements View.OnClickLi
      * 这里主要是处理返回键逻辑
      */
     private void onKeyListener() {
-        if(getDialog()!=null){
+        if (getDialog() != null) {
             getDialog().setOnKeyListener(new DialogInterface.OnKeyListener() {
                 @Override
                 public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
@@ -205,7 +206,6 @@ public class UpdateFragment extends BaseDialogFragment implements View.OnClickLi
     }
 
 
-
     @Override
     public void onClick(View v) {
         int i = v.getId();
@@ -226,7 +226,7 @@ public class UpdateFragment extends BaseDialogFragment implements View.OnClickLi
                     File file = new File(saveApkPath);
                     if (file.exists()) {
                         //检测是否有apk文件，如果有直接普通安装
-                        UpdateUtils.installNormal(mActivity,saveApkPath,packageName);
+                        UpdateUtils.installNormal(mActivity, saveApkPath, packageName);
                         dismissDialog();
                     } else {
                         checkPermissionAndDownApk();
@@ -247,7 +247,6 @@ public class UpdateFragment extends BaseDialogFragment implements View.OnClickLi
             dismissDialog();
         }
     }
-
 
 
     private void changeUploadStatus(int upload_status) {
@@ -280,15 +279,15 @@ public class UpdateFragment extends BaseDialogFragment implements View.OnClickLi
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @SuppressLint("WrongConstant")
     private void checkPermissionAndDownApk() {
-        if(mActivity==null){
+        if (mActivity == null) {
             return;
         }
         PermissionUtils.init(mActivity);
         boolean granted = PermissionUtils.isGranted(mPermission);
-        if(granted){
+        if (granted) {
             setNotification(0);
             downloadTask = downApk(apkUrl, saveApkPath, getListener());
-        }else {
+        } else {
             /*PermissionUtils permission = PermissionUtils.permission(mPermission);
             permission.callback(new PermissionUtils.SimpleCallback() {
                 @Override
@@ -303,7 +302,7 @@ public class UpdateFragment extends BaseDialogFragment implements View.OnClickLi
                 }
             });
             permission.request();*/
-            Toast.makeText(mActivity,"请先申请读写权限",Toast.LENGTH_SHORT).show();
+            Toast.makeText(mActivity, "请先申请读写权限", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -319,10 +318,10 @@ public class UpdateFragment extends BaseDialogFragment implements View.OnClickLi
     }
 
 
+    private FileDownloadListener listener;
 
-    private FileDownloadListener listener ;
-    public FileDownloadListener getListener(){
-        if (listener==null){
+    public FileDownloadListener getListener() {
+        if (listener == null) {
             listener = new FileDownloadListener() {
                 @Override
                 protected void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {
@@ -337,6 +336,7 @@ public class UpdateFragment extends BaseDialogFragment implements View.OnClickLi
                     mProgress.setProgress(progress);
                     setNotification(progress);
                 }
+
                 @Override
                 protected void completed(BaseDownloadTask task) {
                     setNotification(100);
@@ -344,7 +344,7 @@ public class UpdateFragment extends BaseDialogFragment implements View.OnClickLi
                         mProgress.setProgress(100);
                     }
                     changeUploadStatus(UpdateUtils.DownloadStatus.FINISH);
-                    UpdateUtils.installNormal(mActivity,saveApkPath,packageName);
+                    UpdateUtils.installNormal(mActivity, saveApkPath, packageName);
                 }
 
                 @Override
@@ -356,7 +356,7 @@ public class UpdateFragment extends BaseDialogFragment implements View.OnClickLi
                 protected void error(BaseDownloadTask task, Throwable e) {
                     setNotification(-1);
                     changeUploadStatus(UpdateUtils.DownloadStatus.ERROR);
-                    Log.e("UpdateFragment",e.getLocalizedMessage());
+                    Log.e("UpdateFragment", e.getLocalizedMessage());
                 }
 
                 @Override
@@ -369,9 +369,8 @@ public class UpdateFragment extends BaseDialogFragment implements View.OnClickLi
     }
 
 
-
     protected void setNotification(int progress) {
-        if (mActivity==null){
+        if (mActivity == null) {
             return;
         }
         Intent intent = new Intent();
@@ -393,8 +392,6 @@ public class UpdateFragment extends BaseDialogFragment implements View.OnClickLi
             manager.notify(1, notification);
         }
     }
-
-
 
 
 }
