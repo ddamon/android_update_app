@@ -26,19 +26,19 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.e("MainActivity","onDestroy");
+        Log.e("MainActivity", "onDestroy");
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        Log.e("MainActivity","onStop");
+        Log.e("MainActivity", "onStop");
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Log.e("MainActivity","onPause");
+        Log.e("MainActivity", "onPause");
     }
 
     @Override
@@ -51,21 +51,22 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
 
             }
-        },3000);
+        }, 3000);
 
         PermissionUtils.init(this);
         boolean granted = PermissionUtils.isGranted(mPermission);
-        if(!granted){
+        if (!granted) {
             PermissionUtils permission = PermissionUtils.permission(mPermission);
             permission.callback(new PermissionUtils.SimpleCallback() {
                 @Override
                 public void onGranted() {
 
                 }
+
                 @Override
                 public void onDenied() {
                     PermissionUtils.openAppSettings();
-                    Toast.makeText(MainActivity.this,"请允许权限",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "请允许权限", Toast.LENGTH_SHORT).show();
                 }
             });
             permission.request();
@@ -76,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //设置自定义下载文件路径
                 UpdateUtils.APP_UPDATE_DOWN_APK_PATH = "apk" + File.separator + "downApk";
-                String  desc = getResources().getString(R.string.update_content_info);
+                String desc = getResources().getString(R.string.update_content_info);
                 /*
                  * @param isForceUpdate             是否强制更新
                  * @param desc                      更新文案
@@ -84,8 +85,7 @@ public class MainActivity extends AppCompatActivity {
                  * @param apkFileName               apk下载文件路径名称
                  * @param packName                  包名
                  */
-                UpdateFragment.showFragment(MainActivity.this,
-                        false,firstUrl,apkName,desc,BuildConfig.APPLICATION_ID);
+                UpdateFragment.showFragment(MainActivity.this, getUpdateConfig(false));
             }
         });
 
@@ -93,18 +93,14 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.tv_2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String  desc = getResources().getString(R.string.update_content_info1);
-                UpdateFragment.showFragment(MainActivity.this,
-                        true,firstUrl,apkName,desc, BuildConfig.APPLICATION_ID);
+                UpdateFragment.showFragment(MainActivity.this, getUpdateConfig(true));
             }
         });
 
         findViewById(R.id.tv_3).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String  desc = getResources().getString(R.string.update_content_info1);
-                UpdateFragment.showFragment(MainActivity.this,
-                        false,url,apkName,desc, BuildConfig.APPLICATION_ID);
+                UpdateFragment.showFragment(MainActivity.this, getUpdateConfig(false));
             }
         });
 
@@ -116,6 +112,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
+    private UpdateConfig getUpdateConfig(boolean isForceUpdate) {
+        String desc = getResources().getString(R.string.update_content_info);
+        UpdateConfig updateConfig = new UpdateConfig(isForceUpdate, firstUrl, UpdateUtils.APP_UPDATE_DOWN_APK_PATH, apkName, desc, BuildConfig.APPLICATION_ID, 0, true);
+        UpdateFragment.showFragment(MainActivity.this, updateConfig);
+        return updateConfig;
+    }
 
 }

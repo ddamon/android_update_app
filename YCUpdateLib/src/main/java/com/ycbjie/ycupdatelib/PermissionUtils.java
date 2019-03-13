@@ -36,9 +36,9 @@ public final class PermissionUtils {
     private static PermissionUtils sInstance;
 
     private OnRationaleListener mOnRationaleListener;
-    private SimpleCallback      mSimpleCallback;
-    private FullCallback        mFullCallback;
-    private ThemeCallback       mThemeCallback;
+    private SimpleCallback mSimpleCallback;
+    private FullCallback mFullCallback;
+    private ThemeCallback mThemeCallback;
     private Set<String> mPermissions;
     private List<String> mPermissionsRequest;
     private List<String> mPermissionsGranted;
@@ -47,12 +47,12 @@ public final class PermissionUtils {
 
     @SuppressLint("StaticFieldLeak")
     private static Context sApplication;
-    
-    
+
+
     private PermissionUtils() {
         throw new UnsupportedOperationException("u can't instantiate me...");
     }
-    
+
     /**
      * 初始化工具类
      */
@@ -330,11 +330,13 @@ public final class PermissionUtils {
 
     public interface SimpleCallback {
         void onGranted();
+
         void onDenied();
     }
 
     public interface FullCallback {
         void onGranted(List<String> permissionsGranted);
+
         void onDenied(List<String> permissionsDeniedForever, List<String> permissionsDenied);
     }
 

@@ -2,6 +2,7 @@ package com.ycbjie.ycupdatelib;
 
 
 import android.support.v4.content.FileProvider;
+
 /**
  * <pre>
  *     @author yangchong
@@ -11,6 +12,6 @@ import android.support.v4.content.FileProvider;
  *     revise:
  * </pre>
  */
-public class VersionFileProvider extends FileProvider{
+public class VersionFileProvider extends FileProvider {
 
 }

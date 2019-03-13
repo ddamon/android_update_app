@@ -23,7 +23,9 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:27.1.1'
-    implementation 'com.liulishuo.filedownloader:library:1.7.5'
+    api 'com.squareup.okhttp3:okhttp:3.11.0'
+    api 'com.liulishuo.okdownload:okdownload:1.0.5'
+    api 'com.liulishuo.okdownload:okhttp:1.0.5'
 }
 
 
