@@ -31,7 +31,7 @@ public class UpdateUtils {
     public static String APP_UPDATE_DOWN_APK_PATH = "apk" + File.separator + "downApk";
     private static String mApkName;
 
-    static String getLocalApkDownSavePath(String apkName) {
+    public static String getLocalApkDownSavePath(String apkName) {
         mApkName = apkName;
         String saveApkPath = APP_UPDATE_DOWN_APK_PATH + File.separator;
         String sdPath = getInnerSDCardPath();

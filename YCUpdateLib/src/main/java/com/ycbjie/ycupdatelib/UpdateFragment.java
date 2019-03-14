@@ -4,7 +4,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -17,7 +16,6 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.RemoteViews;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -60,8 +58,8 @@ public class UpdateFragment extends BaseDialogFragment implements View.OnClickLi
         if (updateConfig == null) {
             return;
         }
-        UpdateFragment.updateConfig = updateConfig;
         UpdateFragment updateFragment = new UpdateFragment();
+        UpdateFragment.updateConfig = updateConfig;
         updateFragment.show(activity.getSupportFragmentManager());
     }
 
@@ -245,7 +243,7 @@ public class UpdateFragment extends BaseDialogFragment implements View.OnClickLi
         boolean granted = PermissionUtils.isGranted(mPermission);
         if (granted) {
             setNotification(0);
-            String apkPath = updateConfig.getSaveApkPath() + File.pathSeparator + updateConfig.getApkName();
+            String apkPath = UpdateUtils.getLocalApkDownSavePath(updateConfig.getApkName());
             downloadTask = downApk(updateConfig.getApkUrl(), apkPath);
         } else {
             /*PermissionUtils permission = PermissionUtils.permission(mPermission);
@@ -325,31 +323,36 @@ public class UpdateFragment extends BaseDialogFragment implements View.OnClickLi
         return baseDownloadTask;
     }
 
+    NotificationUtils notificationUtils;
 
     protected void setNotification(int progress) {
         if (mActivity == null) {
             return;
         }
+        if (!updateConfig.isShowNotification()) {
+            return;
+        }
         Intent intent = new Intent();
         PendingIntent pendingIntent = PendingIntent.getActivity(mActivity, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        int resId = updateConfig.getNotificationViewResId();
-        RemoteViews remoteViews = new RemoteViews(mActivity.getPackageName(), resId > 0 ? resId : R.layout.remote_notification_view);
-        remoteViews.setTextViewText(R.id.title, getResources().getString(R.string.app_name));
-        remoteViews.setProgressBar(R.id.progress, 100, progress, false);
-        NotificationUtils notificationUtils = new NotificationUtils(mActivity);
-        NotificationManager manager = notificationUtils.getManager();
-        Notification notification = notificationUtils.setContentIntent(pendingIntent)
-                .setContent(remoteViews)
-                .setFlags(Notification.FLAG_AUTO_CANCEL)
-                .setOnlyAlertOnce(true)
-                .getNotification("", "", R.mipmap.ic_launcher);
-        //下载成功或者失败
-        if (progress == 100 || progress == -1) {
-            notificationUtils.clearNotification();
-        } else {
-            manager.notify(notificationId, notification);
+        if (notificationUtils == null) {
+            notificationUtils = new NotificationUtils.Builder()
+                    .setIntent(pendingIntent)
+                    .setFlags(Notification.FLAG_AUTO_CANCEL)
+                    .setOnlyAlertOnce(true).build(mActivity);
+            notification = notificationUtils.getNotification("", "下载中...", R.mipmap.ic_launcher);
         }
+        notificationUtils.setNotificationProgress(notificationId,progress);
     }
 
+    private Notification notification;
+
+    /**
+     * 设置一个通知
+     *
+     * @param notification
+     */
+    public void setNotification(Notification notification) {
+        this.notification = notification;
+    }
 
 }

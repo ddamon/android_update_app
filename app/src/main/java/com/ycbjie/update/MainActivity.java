@@ -16,7 +16,7 @@ import java.io.File;
 public class MainActivity extends AppCompatActivity {
 
     //这个是你的包名
-    private static final String apkName = "apk";
+    private static final String apkName = "apk.apk";
     private static final String firstUrl = "http://ucan.25pp.com/Wandoujia_web_seo_baidu_homepage.apk";
     private static final String secondUrl = "http://img1.haowmc.com/hwmc/test/android_apk/2018101027122399.apk";
     private static final String url = "http://img1.haowmc.com/hwmc/test/android_";
@@ -115,7 +115,6 @@ public class MainActivity extends AppCompatActivity {
     private UpdateConfig getUpdateConfig(boolean isForceUpdate) {
         String desc = getResources().getString(R.string.update_content_info);
         UpdateConfig updateConfig = new UpdateConfig(isForceUpdate, firstUrl, UpdateUtils.APP_UPDATE_DOWN_APK_PATH, apkName, desc, BuildConfig.APPLICATION_ID, 0, true);
-        UpdateFragment.showFragment(MainActivity.this, updateConfig);
         return updateConfig;
     }
 
